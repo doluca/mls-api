@@ -28,7 +28,7 @@ Run on Docker
   docker-compose up -d
 ```
 
-## Docs & playground
+# Docs & playground
 
 [http://localhost:8008/docs](http://localhost:8008/docs)
 
