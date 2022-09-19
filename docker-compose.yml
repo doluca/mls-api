@@ -1,0 +1,31 @@
+version: '1'
+services:
+
+  mls_web:
+    build: .
+    container_name: mls-web
+    command: bash -c 'while !</dev/tcp/mls_db/5432; do sleep 1; done; uvicorn app.main:app --host 0.0.0.0'
+    volumes:
+      - .:/app
+    ports:
+      - 8008:8000
+    environment:
+      - DATABASE_URL=postgres://postgres_db:postgres_password@mls_db:5432/mls_db
+    depends_on:
+      - mls_db
+  
+  mls_db:
+    image: postgres:alpine
+    container_name: mls-db
+    environment:
+      POSTGRES_PASSWORD: postgres_password
+      POSTGRES_DB: mls_db
+      POSTGRES_USER: postgres_db
+    expose:
+      - 5432
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data/
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  postgres_data:
